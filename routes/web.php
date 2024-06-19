@@ -4,6 +4,7 @@ use App\Http\Controllers\Formcontroller;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArticleController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -18,6 +19,7 @@ Route::get('/', function () {
 Route::get('/form', [Formcontroller::class, 'index'])->name('form.get');
 Route::post('/formhandle', [Formcontroller::class, 'show'])->name('form.post');
 
+Route::get('/article/{id?}', [ArticleController::class, 'index']);
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
