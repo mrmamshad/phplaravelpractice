@@ -1,20 +1,19 @@
-import { Inertia } from '@inertiajs/inertia';
+import { Inertia } from "@inertiajs/inertia";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head  } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function Index({ auth, formpost , success, name, email}) {
- console.log(success)
- console.log(name);
- console.log(email);
+export default function Index({ auth, formpost, name = "", email = "", success = "", image = "" }) {
+    console.log("Props:", { auth, formpost, name, email, success, image });
+
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        image: null,
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        profileimage: null,
     });
 
     const [formError, setFormError] = useState(null);
@@ -22,20 +21,29 @@ export default function Index({ auth, formpost , success, name, email}) {
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleFileChange = (e) => {
+        setFormData({
+            ...formData,
+            profileimage: e.target.files[0],
         });
     };
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        Inertia.post(formpost, formData, {
+        const data = new FormData();
+        for (const key in formData) {
+            data.append(key, formData[key]);
+        }
+        Inertia.post(formpost, data, {
+            onSuccess: (page) => {
+                console.log("Server Response:", page.props);
+            },
         });
-    };
-    const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            image: e.target.files[0]
-        });
+
     };
 
     return (
@@ -48,17 +56,20 @@ export default function Index({ auth, formpost , success, name, email}) {
             }
         >
             <Head title="Forms" />
-
             <div className="flex items-center justify-center">
-                <div className=" p-8 rounded-lg shadow-lg max-w-md w-full">
+                <div className="p-8 rounded-lg shadow-lg max-w-md w-full">
                     <h2 className="text-2xl font-bold mb-6 text-gray-100 text-center">
                         Register
                     </h2>
-                    <form className="space-y-3" onSubmit={handleFormSubmit}  encType='multipart/form-data' >
+                    <form
+                        className="space-y-3"
+                        onSubmit={handleFormSubmit}
+                        encType="multipart/form-data"
+                    >
                         <div>
                             <label
                                 htmlFor="name"
-                                className="block text-sm   font-medium text-gray-200"
+                                className="block text-sm font-medium text-gray-200"
                             >
                                 Name
                             </label>
@@ -118,7 +129,20 @@ export default function Index({ auth, formpost , success, name, email}) {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                             />
-                            <input type="file" name="image"  />
+                        </div>
+                        <div>
+                            <label
+                                htmlFor="profileimage"
+                                className="block text-sm font-medium text-gray-200"
+                            >
+                                Profile Image
+                            </label>
+                            <input
+                                type="file"
+                                id="profileimage"
+                                name="profileimage"
+                                onChange={handleFileChange}
+                            />
                         </div>
                         <button
                             type="submit"
@@ -132,6 +156,12 @@ export default function Index({ auth, formpost , success, name, email}) {
                             {Object.keys(formError).map((key) => (
                                 <div key={key}>{formError[key]}</div>
                             ))}
+                        </div>
+                    )}
+                    {image && (
+                        <div className="mt-6">
+                            <h3 className="text-xl font-bold mb-2 text-gray-100 text-center">Uploaded Image:</h3>
+                            <img src={image} alt="Profile" className="mx-auto w-24 h-24 rounded-full " />
                         </div>
                     )}
                 </div>
