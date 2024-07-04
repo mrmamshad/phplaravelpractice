@@ -5,8 +5,8 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Index({ auth, formpost, name = "", email = "", success = "", image = "" }) {
-    console.log("Props:", { auth, formpost, name, email, success, image });
+export default function Index({ auth, formpost, name = "", email = "", success = "", image = "", errors = {} }) {
+    console.log("Props:", { auth, formpost, name, email, success, image  , errors, });
 
     const [formData, setFormData] = useState({
         name: "",
@@ -164,6 +164,12 @@ export default function Index({ auth, formpost, name = "", email = "", success =
                             <img src={image} alt="Profile" className="mx-auto w-24 h-24 rounded-full " />
                         </div>
                     )}
+                    {success && <div className="text-green-500 mt-4">{success}</div>}
+                    {errors.name && <div className="text-red-500 mt-2">{errors.name}</div>}
+                     {errors.email && <div className="text-red-500 mt-2">{errors.email}</div>}
+                   {/*{errors.password && <div className="text-red-500 mt-2">{errors.password[0]}</div>}
+                    {errors.confirmPassword && <div className="text-red-500 mt-2">{errors.confirmPassword[0]}</div>}
+                    {errors.profileimage && <div className="text-red-500 mt-2">{errors.profileimage[0]}</div>} */}
                 </div>
             </div>
             <ToastContainer />

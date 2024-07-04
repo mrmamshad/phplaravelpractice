@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormvalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -19,11 +20,13 @@ class FormController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show(FormvalController $request)
     {
         $name = $request->input('name');
         $email = $request->input('email');
 
+        $validation = $request->validated();
+        // dd($validation);
         if ($request->hasFile('profileimage')) {
             $image = $request->file('profileimage');
             $imageName = $image->getClientOriginalName();
@@ -40,4 +43,5 @@ class FormController extends Controller
             'image' => $path,
         ]);
     }
+
 }
